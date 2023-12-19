@@ -1,0 +1,32 @@
+name: Job2
+
+on:
+  workflow_call:
+    secrets:
+      SECRET_A:
+        required: true
+      SECRET_B:
+        required: true
+
+jobs:
+  job1:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - env:
+          BRANCH: ${{ github.ref_name }}
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          echo "BRANCH: ${BRANCH}"
+          echo "GITHUB_TOKEN: ${GITHUB_TOKEN}"
+
+  job2:
+    runs-on: ubuntu-latest
+    environment: main
+    steps:
+      - env:
+          SECRET_A: ${{ secrets.SECRET_A }}
+          SECRET_B: ${{ secrets.SECRET_B }}
+        run: |
+          echo "SECRET_A: ${SECRET_A}"
+          echo "SECRET_B: ${SECRET_B}"

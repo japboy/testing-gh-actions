@@ -1,0 +1,33 @@
+name: Main workflow
+
+on:
+  push:
+    branches:
+      - "**"
+
+jobs:
+  workflow_call_job1:
+    uses: ./.github/workflows/workflow1.yml
+
+  workflow_call_job2:
+    needs: [workflow_call_job1]
+    uses: ./.github/workflows/workflow2.yml
+    secrets:
+      SECRET_A: ${{ secrets.SECRET_A }}
+      SECRET_B: ${{ secrets.SECRET_B }}
+
+  direct_job1:
+    runs-on: ubuntu-latest
+    environment: main
+    steps:
+      - env:
+          SECRET_A: ${{ secrets.SECRET_A }}
+          SECRET_B: ${{ secrets.SECRET_B }}
+          SECRET_B_: ${{ env.SECRET_B }}
+        run: |
+          echo "SECRET_A: ${SECRET_A}"
+          echo "SECRET_A: ${{ secrets.SECRET_A }}"
+          echo "SECRET_B: ${SECRET_B}"
+          echo "SECRET_B: ${SECRET_B_}"
+          echo "SECRET_B: ${{ secrets.SECRET_B }}"
+          echo "SECRET_B: ${{ env.SECRET_B }}"
